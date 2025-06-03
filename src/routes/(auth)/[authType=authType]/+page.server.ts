@@ -1,8 +1,8 @@
-import {
-	createSession,
-	generateSessionToken,
-	setSessionTokenCookie
-} from '$lib/server/auth/index.js';
+// import {
+// 	createSession,
+// 	generateSessionToken,
+// 	setSessionTokenCookie
+// } from '$lib/server/auth/index.js';
 
 import { fail, redirect } from '@sveltejs/kit';
 
@@ -29,21 +29,5 @@ export const actions = {
 			// });
 		}
 		return redirect(303, '/');
-
-		const result = await fetch('http://localhost:5678/webhook/key', {
-			method: 'POST',
-			body: JSON.stringify({ apikey }),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		}).then((r) => r.json());
-
-		if (result) {
-			return redirect(303, '/');
-		}
-		return fail(400, {
-			success: false,
-			message: `Failed to setup apikey. Please try again later.`
-		});
 	}
 };
