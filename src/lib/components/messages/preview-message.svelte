@@ -5,12 +5,13 @@
 	import SparklesIcon from '../icons/sparkles.svelte';
 	import { Markdown } from '../markdown';
 	import MessageReasoning from '../message-reasoning.svelte';
-	import PreviewAttachment from '../preview-attachment.svelte';
 
 	let { message, readonly, loading }: { message: UIMessage; readonly: boolean; loading: boolean } =
 		$props();
 
 	let mode = $state<'view'>('view');
+
+	console.log(message);
 </script>
 
 <div
@@ -45,6 +46,12 @@
 				</div>
 			{/if} -->
 
+			{#if message.role === 'assistant'}
+				<!-- {JSON.stringify(message.parts)} -->
+				<!-- <Markdown md={message.content.output} /> -->
+				<!-- {:else} -->
+				<!-- <Markdown md={part.text} /> -->
+			{/if}
 			{#each message.parts as part, i (`${message.id}-${i}`)}
 				{@const { type } = part}
 				{#if type === 'reasoning'}
@@ -58,9 +65,23 @@
 								})}
 							>
 								{#if message.role === 'assistant'}
-									<Markdown md={part.text} />
+									<Markdown md={JSON.parse(part.text).response} />
+									{#if JSON.parse(part.text)?.sql_query}
+										<div class="flex flex-col">
+											<div>🧮 La requête SQL qui a été concoctée pour arriver à ce résultat:</div>
+											<Markdown md={'`\n' + JSON.parse(part.text)?.sql_query + '`'} />
+										</div>
+									{/if}
 								{:else}
 									<Markdown md={part.text} />
+								{/if}
+								{#if message.role === 'assistant'}
+									<div class="text-center text-sm text-gray-400/50">
+										Cuisiné le {new Intl.DateTimeFormat('fr-FR', {
+											dateStyle: 'full',
+											timeStyle: 'short'
+										}).format(new Date(message.createdAt))} par Grist ✧ Ai
+									</div>
 								{/if}
 							</div>
 						</div>

@@ -19,6 +19,7 @@ import { ok, safeTry } from 'neverthrow';
 export async function POST({ request, locals: { user }, cookies }) {
 	// TODO: zod?
 	const { id, messages }: { id: string; messages: UIMessage[] } = await request.json();
+	console.log(request);
 	// const selectedChatModel = cookies.get('selected-model');
 
 	// if (!user && !allowAnonymousChats) {
@@ -35,77 +36,33 @@ export async function POST({ request, locals: { user }, cookies }) {
 		error(400, 'No user message found');
 	}
 
-	if (user) {
-		await safeTry(async function* () {
-			let chat: Chat;
-			const chatResult = await getChatById({ id });
-			if (chatResult.isErr()) {
-				if (chatResult.error._tag !== 'DbEntityNotFoundError') {
-					return chatResult;
-				}
-				const title = yield* generateTitleFromUserMessage({ message: userMessage });
-				chat = yield* saveChat({ id, userId: user.id, title });
-			} else {
-				chat = chatResult.value;
-			}
-
-			if (chat.userId !== user.id) {
-				error(403, 'Forbidden');
-			}
-			await saveMessages({
-				messages: [
-					{
-						chatId: id || crypto.randomUUID(),
-						// id: userMessage.id,
-						role: 'user',
-						parts: userMessage.parts,
-						attachments: userMessage.experimental_attachments ?? [],
-						createdAt: new Date()
-					}
-				]
-			});
-
-			return ok(undefined);
-		}).orElse(() => error(500, 'An error occurred while processing your request'));
-	}
-
 	const result = await fetch('http://localhost:5678/webhook/chat', {
 		method: 'POST',
 		body: JSON.stringify({ messages }),
 		headers: {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
+			'X-Api-Key': cookies.get('apikey')
 		}
 	})
 		.then((r) => r.json())
-		.then((result) => result[0])
+		.then((result) => result)
 		.catch((e) => {
 			console.log(e);
-			return 'Olala.';
+			error(500, 'An error occurred while processing your request');
 		});
 	if (result) {
+		return Response.json(result);
+
 		const assistantId = result.id;
 
 		const assistantMessage = result.choices;
-		// console.log(id || crypto.randomUUID());
-		// await saveMessages({
-		// 	messages: [
-		// 		{
-		// 			// id: assistantId,
-		// 			chatId: id || crypto.randomUUID(),
-		// 			role: 'assistant', //assistantMessage.role,
-		// 			parts: assistantMessage.parts,
-		// 			attachments: assistantMessage.experimental_attachments ?? [],
-		// 			createdAt: new Date()
-		// 		}
-		// 	]
-		// });
-		console.log(assistantMessage);
-		return Response.json({
-			chatId: assistantId,
-			messages: assistantMessage
+		const filtered = assistantMessage.flatMap((item) => {
+			return item.message;
 		});
+		console.log(filtered);
+		return Response.json(assistantMessage?.[0]);
 	}
-	return Response.json([]);
+	return Response.json(['bad thing']);
 	return createDataStreamResponse({
 		execute: (dataStream) => {
 			const result = streamText({

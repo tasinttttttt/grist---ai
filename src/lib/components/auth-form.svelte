@@ -24,6 +24,7 @@
 	import type { Snippet } from 'svelte';
 	import { toast } from 'svelte-sonner';
 
+	import { apiKey, setApiKey } from '$lib/hooks/useApiKey';
 	let { form, submitButton, children }: AuthFormProps = $props();
 
 	let pending = $state(false);
@@ -43,7 +44,17 @@
 	<div class="flex flex-col gap-2">
 		<Label for="apikey" class="text-zinc-600 dark:text-zinc-400">ApiKey</Label>
 
-		<Input id="apikey" name="apikey" class="text-md bg-muted md:text-sm" type="password" required />
+		<Input
+			id="apikey"
+			name="apikey"
+			class="text-md bg-muted md:text-sm"
+			type="password"
+			required
+			on:input={(e) => {
+				setApiKey(e.target.value);
+				console.log($apiKey);
+			}}
+		/>
 	</div>
 
 	{@render submitButton({ pending, success: !!form?.success })}

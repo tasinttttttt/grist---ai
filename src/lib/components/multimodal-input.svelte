@@ -54,7 +54,10 @@
 
 	async function submitForm(event?: Event) {
 		if (user) {
-			replaceState(`/chat/${chatClient.id}`, {});
+			replaceState(`/chat/${chatClient.id}`, {
+				docId,
+				tableId
+			});
 		}
 
 		await chatClient.handleSubmit(event, {
@@ -121,7 +124,6 @@
 		adjustHeight();
 		mounted = true;
 	});
-
 	$effect.pre(() => {
 		storedInput.value = chatClient.input;
 	});

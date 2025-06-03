@@ -4,6 +4,7 @@ import { SelectedModel } from '$lib/hooks/selected-model.svelte.js';
 export async function load({ cookies, locals }) {
 	const { user } = locals;
 	const sidebarCollapsed = cookies.get('sidebar:state') !== 'true';
+	// const apikey = cookies.get('apikey');
 
 	// let modelId = cookies.get('selected-model');
 	// if (!modelId || !chatModels.find((model) => model.id === modelId)) {
@@ -19,6 +20,7 @@ export async function load({ cookies, locals }) {
 	return {
 		user,
 		sidebarCollapsed
+		// apikey
 		// selectedChatModel: new SelectedModel(modelId)
 	};
 }

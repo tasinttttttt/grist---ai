@@ -4,8 +4,6 @@
 	import { page } from '$app/state';
 
 	let { form } = $props();
-
-	const apiKey = $derived(page.params.apikey);
 </script>
 
 <div
