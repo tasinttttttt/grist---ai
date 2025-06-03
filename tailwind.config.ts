@@ -65,7 +65,7 @@ const config: Config = {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			fontFamily: {
-				sans: ['geist', ...fontFamily.sans],
+				sans: '"Helvetica Neue",Helvetica,Arial,sans-serif',
 				mono: ['geist-mono', ...fontFamily.mono]
 			},
 			keyframes: {
