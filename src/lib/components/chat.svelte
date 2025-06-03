@@ -9,7 +9,7 @@
 	import { untrack } from 'svelte';
 	import type { UIMessage } from '@ai-sdk/svelte';
 
-	import { PUBLIC_CHAT_URL } from '$env/static/public';
+	// import { PUBLIC_CHAT_URL } from '$env/static/public';
 
 	let {
 		user,
@@ -60,7 +60,7 @@
 	);
 </script>
 
-<div class="bg-background flex h-dvh min-w-0 flex-col">
+<div class="flex h-dvh min-w-0 flex-col bg-background">
 	<ChatHeader {user} {chat} {readonly} />
 	<Messages
 		{readonly}
@@ -68,7 +68,7 @@
 		messages={chatClient?.messages}
 	/>
 
-	<form class="bg-background mx-auto flex w-full gap-2 px-4 pb-4 md:max-w-3xl md:pb-6">
+	<form class="mx-auto flex w-full gap-2 bg-background px-4 pb-4 md:max-w-3xl md:pb-6">
 		{#if !readonly}
 			<MultimodalInput {user} {chatClient} class="flex-1" />
 		{/if}
