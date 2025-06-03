@@ -14,5 +14,5 @@
 			<span class="cursor-default">Grist ♥️ AI</span>
 		</Tooltip>
 	{/if}
-	<Button href="/signin" class="order-5 px-2 py-1.5 md:h-[34px]">Clé API Grist</Button>
+	<Button href="/signin" class="ml-auto px-2 py-1.5 md:h-[34px]">Clé API Grist</Button>
 </header>

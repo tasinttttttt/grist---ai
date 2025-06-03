@@ -8,6 +8,6 @@
 	chatHistory.setContext();
 </script>
 
-<SidebarProvider open={!data.sidebarCollapsed}>
+<SidebarProvider open={false}>
 	<SidebarInset>{@render children?.()}</SidebarInset>
 </SidebarProvider>

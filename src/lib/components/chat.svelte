@@ -16,8 +16,8 @@
 		readonly,
 		initialMessages
 	}: {
-		user: User | undefined;
-		chat: DbChat | undefined;
+		user: unknown | undefined;
+		chat: unknown | undefined;
 		initialMessages: UIMessage[];
 		readonly: boolean;
 	} = $props();
@@ -81,7 +81,7 @@
 </script>
 
 <div class="bg-background flex h-dvh min-w-0 flex-col">
-	<ChatHeader {user} {chat} {readonly} />
+	<ChatHeader />
 	<Messages
 		{readonly}
 		loading={chatClient.status === 'streaming' || chatClient.status === 'submitted'}

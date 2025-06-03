@@ -1,4 +1,7 @@
 <script module lang="ts">
+	// import EyeIcon from '$lib/components/ui/eye.svelte';
+	// import EyeHiddenIcon from '$lib/components/ui/eye-hidden.svelte';
+
 	export type FormSuccessData = {
 		success: true;
 	};
@@ -38,22 +41,41 @@
 			return update();
 		};
 	};
+
+	let hide = $state(true);
 </script>
 
 <form method="POST" class="flex flex-col gap-4 px-4 sm:px-16" use:enhance={enhanceCallback}>
 	<div class="flex flex-col gap-2">
 		<Label for="apikey" class="text-zinc-600 dark:text-zinc-400">ApiKey</Label>
 
-		<Input
-			id="apikey"
-			name="apikey"
-			class="text-md bg-muted md:text-sm"
-			type="password"
-			required
-			on:input={(e) => {
-				setApiKey(e.target.value);
-			}}
-		/>
+		<div class="flex flex-row gap-2">
+			<Input
+				id="apikey"
+				name="apikey"
+				class="text-md bg-muted md:text-sm"
+				type={(hide && 'password') || 'text'}
+				value={$apiKey}
+				required
+				on:input={(e) => {
+					setApiKey(e.target.value);
+				}}
+			/>
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<button
+				onclick={(e) => {
+					e.preventDefault();
+					hide = !hide;
+				}}
+				class="text-xl"
+				>{#if hide}
+					🙈
+				{:else}
+					🙉
+				{/if}</button
+			>
+		</div>
 	</div>
 
 	{@render submitButton({ pending, success: !!form?.success })}

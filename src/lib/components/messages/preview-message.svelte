@@ -21,18 +21,16 @@
 >
 	<div
 		class={cn(
-			'flex w-full gap-4 group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl',
+			'relative flex w-full gap-4 group-data-[role=user]/message:ml-auto group-data-[role=user]/message:max-w-2xl',
 			{
 				'group-data-[role=user]/message:w-fit': true
 			}
 		)}
 	>
 		{#if message.role === 'assistant'}
-			<div
-				class="bg-background ring-border flex size-8 shrink-0 items-center justify-center rounded-full ring-1"
-			>
+			<div class="bg-background relative top-4 flex size-4 shrink-0 items-center justify-center">
 				<div class="translate-y-px">
-					<SparklesIcon size={14} />
+					<SparklesIcon size={12} />
 				</div>
 			</div>
 		{/if}

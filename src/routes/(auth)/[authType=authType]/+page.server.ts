@@ -28,6 +28,7 @@ export const actions = {
 			// 	path: '/'
 			// });
 		}
+		return redirect(303, '/');
 
 		const result = await fetch('http://localhost:5678/webhook/key', {
 			method: 'POST',
