@@ -1,0 +1,39 @@
+services:
+  app:
+    container_name: grist-ai-dev
+    environment:
+      NODE_ENV: development
+      PUBLIC_API_URL: ${PUBLIC_API_URL:-http://localhost:8088}
+      PRIVATE_BACKEND_URL: ${PRIVATE_BACKEND_URL:-http://pb:8090}
+      PRIVATE_API_USER: ${PRIVATE_API_USER:-''}
+      PRIVATE_API_PASS: ${PRIVATE_API_PASS:-''}
+    build:
+      dockerfile: Dockerfile.front
+      target: dev
+    depends_on:
+      - pb
+    restart: unless-stopped
+    networks:
+      - app
+    ports:
+      - 5173:5173
+      - 24678:24678
+    volumes:
+      - type: bind
+        source: .
+        target: /app
+  pb:
+    container_name: grist-ai-dev-pb
+    build:
+      dockerfile: Dockerfile.api
+    ports:
+      - ${HOST_API_PORT:-8088}:8090
+    networks:
+      - app
+    volumes:
+      - type: bind
+        source: ${HOST_VOLUME_PATH:-./pb/pb_data}
+        target: /pb/pb_data
+networks:
+  app:
+    driver: bridge

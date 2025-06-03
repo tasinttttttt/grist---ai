@@ -1,13 +1,6 @@
-import { getChatsByUserId } from '$lib/server/db/queries.js';
-import { error } from '@sveltejs/kit';
+import { getChats } from '$lib/server/db/queries.js';
 
-export async function GET({ locals: { user } }) {
-	if (!user) {
-		error(401, 'Unauthorized');
-	}
-
-	return await getChatsByUserId({ id: user.id }).match(
-		(chats) => Response.json(chats),
-		() => error(500, 'An error occurred while processing your request')
-	);
+export async function GET({ locals }) {
+	const chats = await getChats();
+	return Response.json(chats);
 }

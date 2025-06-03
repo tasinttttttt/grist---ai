@@ -1,4 +1,4 @@
-export const DEFAULT_CHAT_MODEL: string = 'chat-model';
+export const DEFAULT_CHAT_MODEL: string = 'o3-mini';
 
 interface ChatModel {
 	id: string;
@@ -8,13 +8,13 @@ interface ChatModel {
 
 export const chatModels: Array<ChatModel> = [
 	{
-		id: 'chat-model',
-		name: 'Chat model',
-		description: 'Primary model for all-purpose chat'
+		id: 'Meta-Llama-3.1-8B-Instruct',
+		name: 'Petit Albert',
+		description: 'Le petit'
 	},
 	{
-		id: 'chat-model-reasoning',
-		name: 'Reasoning model',
-		description: 'Uses advanced reasoning'
+		id: 'albert-large',
+		name: 'Grand Albert',
+		description: 'Le grand'
 	}
 ];

@@ -3,6 +3,7 @@ import { systemPrompt } from '$lib/server/ai/prompts.js';
 import { generateTitleFromUserMessage } from '$lib/server/ai/utils';
 import { deleteChatById, getChatById, saveChat, saveMessages } from '$lib/server/db/queries.js';
 import type { Chat } from '$lib/server/db/schema';
+import { pbStore } from '$lib/stores/pb.js';
 import { getMostRecentUserMessage, getTrailingMessageId } from '$lib/utils/chat.js';
 import { allowAnonymousChats } from '$lib/utils/constants.js';
 import { error } from '@sveltejs/kit';
@@ -18,15 +19,15 @@ import { ok, safeTry } from 'neverthrow';
 export async function POST({ request, locals: { user }, cookies }) {
 	// TODO: zod?
 	const { id, messages }: { id: string; messages: UIMessage[] } = await request.json();
-	const selectedChatModel = cookies.get('selected-model');
+	// const selectedChatModel = cookies.get('selected-model');
 
-	if (!user && !allowAnonymousChats) {
-		error(401, 'Unauthorized');
-	}
+	// if (!user && !allowAnonymousChats) {
+	// 	error(401, 'Unauthorized');
+	// }
 
-	if (!selectedChatModel) {
-		error(400, 'No chat model selected');
-	}
+	// if (!selectedChatModel) {
+	// 	error(400, 'No chat model selected');
+	// }
 
 	const userMessage = getMostRecentUserMessage(messages);
 
@@ -51,12 +52,11 @@ export async function POST({ request, locals: { user }, cookies }) {
 			if (chat.userId !== user.id) {
 				error(403, 'Forbidden');
 			}
-
-			yield* saveMessages({
+			await saveMessages({
 				messages: [
 					{
-						chatId: id,
-						id: userMessage.id,
+						chatId: id || crypto.randomUUID(),
+						// id: userMessage.id,
 						role: 'user',
 						parts: userMessage.parts,
 						attachments: userMessage.experimental_attachments ?? [],
@@ -69,10 +69,47 @@ export async function POST({ request, locals: { user }, cookies }) {
 		}).orElse(() => error(500, 'An error occurred while processing your request'));
 	}
 
+	const result = await fetch('http://localhost:5678/webhook/chat', {
+		method: 'POST',
+		body: JSON.stringify({ messages }),
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	})
+		.then((r) => r.json())
+		.then((result) => result[0])
+		.catch((e) => {
+			console.log(e);
+			return 'Olala.';
+		});
+	if (result) {
+		const assistantId = result.id;
+
+		const assistantMessage = result.choices;
+		// console.log(id || crypto.randomUUID());
+		// await saveMessages({
+		// 	messages: [
+		// 		{
+		// 			// id: assistantId,
+		// 			chatId: id || crypto.randomUUID(),
+		// 			role: 'assistant', //assistantMessage.role,
+		// 			parts: assistantMessage.parts,
+		// 			attachments: assistantMessage.experimental_attachments ?? [],
+		// 			createdAt: new Date()
+		// 		}
+		// 	]
+		// });
+		console.log(assistantMessage);
+		return Response.json({
+			chatId: assistantId,
+			messages: assistantMessage
+		});
+	}
+	return Response.json([]);
 	return createDataStreamResponse({
 		execute: (dataStream) => {
 			const result = streamText({
-				model: myProvider.languageModel(selectedChatModel),
+				// model: myProvider.languageModel(selectedChatModel),
 				system: systemPrompt({ selectedChatModel }),
 				messages,
 				maxSteps: 5,

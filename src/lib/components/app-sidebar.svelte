@@ -31,7 +31,7 @@
 					}}
 					class="flex flex-row items-center gap-3"
 				>
-					<span class="cursor-pointer rounded-md px-2 text-lg font-semibold hover:bg-muted">
+					<span class="hover:bg-muted cursor-pointer rounded-md px-2 text-lg font-semibold">
 						Chatbot
 					</span>
 				</a>
@@ -58,7 +58,7 @@
 		</SidebarMenu>
 	</SidebarHeader>
 	<SidebarContent>
-		<SidebarHistory {user} />
+		<!-- <SidebarHistory {user} /> -->
 	</SidebarContent>
 	<SidebarFooter>
 		{#if user}

@@ -2,13 +2,13 @@ import type { Attachment, CoreAssistantMessage, CoreToolMessage, Message } from 
 import type { Message as DBMessage, Document } from '$lib/server/db/schema';
 import type { UIMessage } from '@ai-sdk/svelte';
 
-export function convertToUIMessages(messages: Array<DBMessage>): Array<UIMessage> {
+export function convertToUIMessages(messages: Array<DBMessage>) {
 	return messages.map((message) => ({
 		id: message.id,
 		parts: message.parts as UIMessage['parts'],
 		role: message.role as UIMessage['role'],
 		// Note: content will soon be deprecated in @ai-sdk/react
-		content: '',
+		// content: '',
 		createdAt: message.createdAt,
 		experimental_attachments: (message.attachments as Array<Attachment>) ?? []
 	}));

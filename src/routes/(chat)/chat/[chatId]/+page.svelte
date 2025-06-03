@@ -3,6 +3,7 @@
 	import { convertToUIMessages } from '$lib/utils/chat';
 
 	let { data } = $props();
+	console.log({ data });
 </script>
 
 <Chat

@@ -1,0 +1,29 @@
+FROM node:alpine AS base
+WORKDIR /app
+RUN apk add --no-cache \
+    curl \
+    unzip \
+    ca-certificates
+COPY . .
+RUN corepack enable pnpm
+RUN pnpm install
+RUN pnpm update
+
+FROM base AS dev
+WORKDIR /app
+EXPOSE 5173
+EXPOSE 24678
+ENTRYPOINT ["pnpm", "run", "dev-host"]
+
+FROM base AS prod
+WORKDIR /app
+RUN pnpm run build
+RUN mkdir -p /var/html
+RUN cp -r build /var/html/app
+RUN cp ./package.json /var/html/app/package.json
+WORKDIR /var/html/app
+RUN pnpm install --prod
+RUN rm -rf /app
+RUN rm -rf /root/.cache /root/.local/share/pnpm
+EXPOSE 3000
+ENTRYPOINT ["node", "/var/html/app/index.js"]

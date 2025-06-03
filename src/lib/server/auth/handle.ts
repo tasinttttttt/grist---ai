@@ -1,30 +1,48 @@
 import type { Handle } from '@sveltejs/kit';
-import {
-	deleteSessionTokenCookie,
-	getSessionCookie,
-	setSessionTokenCookie,
-	validateSessionToken
-} from '.';
+// import {
+// 	deleteSessionTokenCookie,
+// 	getSessionCookie,
+// 	setSessionTokenCookie,
+// 	validateSessionToken
+// } from '.';
+
+import { env as privateEnv } from '$env/dynamic/private';
+import PocketBase from 'pocketbase';
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const token = getSessionCookie(event);
-	if (!token) {
-		return resolve(event);
-	}
+	// event.locals.pb = new PocketBase(privateEnv.PRIVATE_BACKEND_URL);
 
-	const validatedTokenResult = await validateSessionToken(token);
-	if (validatedTokenResult.isErr()) {
-		console.error(validatedTokenResult.error);
-	} else {
-		const { session, user } = validatedTokenResult.value;
-		if (session) {
-			setSessionTokenCookie(event.cookies, token, session.expiresAt);
-			event.locals.session = session;
-			event.locals.user = user;
-		} else {
-			deleteSessionTokenCookie(event.cookies);
-		}
-	}
+	// let userId = event.cookies.get('user');
+	// let user = null;
+
+	// const auth = {
+	// 	email: privateEnv.PRIVATE_API_USER,
+	// 	password: privateEnv.PRIVATE_API_PASS
+	// };
+
+	// // Auth
+	// await event.locals.pb.collection('_superusers').authWithPassword(auth.email, auth.password);
+
+	// if (userId) {
+	// 	// Fetch the user from PocketBase
+	// 	user = await event.locals.pb
+	// 		.collection('anonymous_users')
+	// 		.getOne(userId)
+	// 		.catch((err) => {});
+	// }
+
+	// if (user) {
+	// 	event.locals.user = user;
+
+	// 	// Add header for update operations
+	// 	event.locals.pb.beforeSend = (url, options) => {
+	// 		options.headers = {
+	// 			...options.headers,
+	// 			'x-userid': user
+	// 		};
+	// 		return { url, options };
+	// 	};
+	// }
 
 	return resolve(event);
 };

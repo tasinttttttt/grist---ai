@@ -37,42 +37,13 @@
 			return update();
 		};
 	};
-
-	const defaultValue = $derived.by(() => {
-		if (!form?.success && form?.email) {
-			return form.email;
-		}
-		return undefined;
-	});
 </script>
 
 <form method="POST" class="flex flex-col gap-4 px-4 sm:px-16" use:enhance={enhanceCallback}>
 	<div class="flex flex-col gap-2">
-		<Label for="email" class=" text-zinc-600 dark:text-zinc-400">Email Address</Label>
+		<Label for="apikey" class="text-zinc-600 dark:text-zinc-400">ApiKey</Label>
 
-		<Input
-			id="email"
-			name="email"
-			class="text-md bg-muted md:text-sm"
-			type="email"
-			placeholder="user@acme.com"
-			autocomplete="email"
-			required
-			autofocus
-			{defaultValue}
-		/>
-	</div>
-
-	<div class="flex flex-col gap-2">
-		<Label for="password" class="text-zinc-600 dark:text-zinc-400">Password</Label>
-
-		<Input
-			id="password"
-			name="password"
-			class="text-md bg-muted md:text-sm"
-			type="password"
-			required
-		/>
+		<Input id="apikey" name="apikey" class="text-md bg-muted md:text-sm" type="password" required />
 	</div>
 
 	{@render submitButton({ pending, success: !!form?.success })}

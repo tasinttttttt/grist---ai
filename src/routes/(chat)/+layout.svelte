@@ -7,7 +7,7 @@
 
 	const chatHistory = new ChatHistory(data.chats);
 	chatHistory.setContext();
-	data.selectedChatModel.setContext();
+	// data.selectedChatModel.setContext();
 </script>
 
 <SidebarProvider open={!data.sidebarCollapsed}>

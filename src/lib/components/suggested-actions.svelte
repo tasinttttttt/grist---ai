@@ -8,26 +8,26 @@
 	let { user, chatClient }: { user: User | undefined; chatClient: Chat } = $props();
 
 	const suggestedActions = [
-		{
-			title: 'What are the advantages',
-			label: 'of using SvelteKit?',
-			action: 'What are the advantages of using SvelteKit?'
-		},
-		{
-			title: 'Write code to',
-			label: `demonstrate djikstra's algorithm`,
-			action: `Write code to demonstrate djikstra's algorithm`
-		},
-		{
-			title: 'Help me write an essay',
-			label: `about silicon valley`,
-			action: `Help me write an essay about silicon valley`
-		},
-		{
-			title: 'What is the weather like',
-			label: 'in San Francisco?',
-			action: 'What is the weather like in San Francisco?'
-		}
+		// {
+		// 	title: 'What are the advantages',
+		// 	label: 'of using SvelteKit?',
+		// 	action: 'What are the advantages of using SvelteKit?'
+		// },
+		// {
+		// 	title: 'Write code to',
+		// 	label: `demonstrate djikstra's algorithm`,
+		// 	action: `Write code to demonstrate djikstra's algorithm`
+		// },
+		// {
+		// 	title: 'Help me write an essay',
+		// 	label: `about silicon valley`,
+		// 	action: `Help me write an essay about silicon valley`
+		// },
+		// {
+		// 	title: 'What is the weather like',
+		// 	label: 'in San Francisco?',
+		// 	action: 'What is the weather like in San Francisco?'
+		// }
 	];
 </script>
 

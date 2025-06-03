@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Chat } from '@ai-sdk/svelte';
-	import type { Attachment } from 'ai';
 	import { toast } from 'svelte-sonner';
 	import { ChatHistory } from '$lib/hooks/chat-history.svelte';
 	import ChatHeader from './chat-header.svelte';
@@ -10,7 +9,7 @@
 	import { untrack } from 'svelte';
 	import type { UIMessage } from '@ai-sdk/svelte';
 
-	import { PUBLIC_API_URL } from '$env/static/public';
+	import { PUBLIC_CHAT_URL } from '$env/static/public';
 
 	let {
 		user,
@@ -29,13 +28,13 @@
 	const chatClient = $derived(
 		new Chat({
 			id: chat?.id,
-			api: PUBLIC_API_URL,
-			// This way, the client is only recreated when the ID changes, allowing us to fully manage messages
-			// clientside while still SSRing them on initial load or when we navigate to a different chat.
+			api: '/api/chat', //PUBLIC_CHAT_URL,
 			initialMessages: untrack(() => initialMessages),
 			sendExtraMessageFields: true,
+			streamProtocol: 'text',
 			generateId: crypto.randomUUID.bind(crypto),
-			onFinish: async () => {
+			onResponse: (r) => {},
+			onFinish: async (e) => {
 				await chatHistory.refetch();
 			},
 			onError: (error) => {
@@ -59,8 +58,6 @@
 			}
 		})
 	);
-
-	let attachments = $state<Attachment[]>([]);
 </script>
 
 <div class="bg-background flex h-dvh min-w-0 flex-col">
@@ -68,30 +65,12 @@
 	<Messages
 		{readonly}
 		loading={chatClient.status === 'streaming' || chatClient.status === 'submitted'}
-		messages={chatClient.messages}
+		messages={chatClient?.messages}
 	/>
 
 	<form class="bg-background mx-auto flex w-full gap-2 px-4 pb-4 md:max-w-3xl md:pb-6">
 		{#if !readonly}
-			<MultimodalInput {attachments} {user} {chatClient} class="flex-1" />
+			<MultimodalInput {user} {chatClient} class="flex-1" />
 		{/if}
 	</form>
 </div>
-
-<!-- TODO -->
-<!-- <Artifact
-	chatId={id}
-	{input}
-	{setInput}
-	{handleSubmit}
-	{isLoading}
-	{stop}
-	{attachments}
-	{setAttachments}
-	{append}
-	{messages}
-	{setMessages}
-	{reload}
-	{votes}
-	{readonly}
-/> -->

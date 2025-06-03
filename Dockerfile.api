@@ -1,0 +1,14 @@
+FROM alpine
+
+RUN apk add --no-cache \
+	curl \
+    unzip \
+    ca-certificates
+
+WORKDIR /pb
+COPY pb .
+COPY ./install_pocketbase_docker.sh /install_pocketbase.sh
+RUN /install_pocketbase.sh
+
+EXPOSE 8090
+ENTRYPOINT ["/pb/pocketbase", "serve", "--http=0.0.0.0:8090"]

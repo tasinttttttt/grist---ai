@@ -17,12 +17,10 @@
 	import type { User } from '$lib/server/db/schema';
 
 	let {
-		attachments = $bindable(),
 		user,
 		chatClient,
 		class: c
 	}: {
-		attachments: Attachment[];
 		user: User | undefined;
 		chatClient: Chat;
 		class?: string;
@@ -60,10 +58,9 @@
 		}
 
 		await chatClient.handleSubmit(event, {
-			experimental_attachments: attachments
+			experimental_attachments: []
 		});
 
-		attachments = [];
 		resetHeight();
 
 		if (innerWidth.current && innerWidth.current > 768) {
@@ -112,8 +109,6 @@
 			const successfullyUploadedAttachments = uploadedAttachments.filter(
 				(attachment) => attachment !== undefined
 			);
-
-			attachments = [...attachments, ...successfullyUploadedAttachments];
 		} catch (error) {
 			console.error('Error uploading files!', error);
 		} finally {
@@ -133,7 +128,7 @@
 </script>
 
 <div class="relative flex w-full flex-col gap-4">
-	{#if mounted && chatClient.messages.length === 0 && attachments.length === 0 && uploadQueue.length === 0}
+	{#if mounted && chatClient.messages.length === 0 && uploadQueue.length === 0}
 		<SuggestedActions {user} {chatClient} />
 	{/if}
 
@@ -146,7 +141,7 @@
 		tabIndex={-1}
 	/>
 
-	{#if attachments.length > 0 || uploadQueue.length > 0}
+	<!-- {#if attachments.length > 0 || uploadQueue.length > 0}
 		<div class="flex flex-row items-end gap-2 overflow-x-scroll">
 			{#each attachments as attachment (attachment.url)}
 				<PreviewAttachment {attachment} />
@@ -163,14 +158,14 @@
 				/>
 			{/each}
 		</div>
-	{/if}
+	{/if} -->
 
 	<Textarea
 		bind:ref={textareaRef}
 		placeholder="Send a message..."
 		bind:value={() => chatClient.input, setInput}
 		class={cn(
-			'max-h-[calc(75dvh)] min-h-[24px] resize-none overflow-hidden rounded-2xl bg-muted pb-10 !text-base dark:border-zinc-700',
+			'bg-muted max-h-[calc(75dvh)] min-h-[24px] resize-none overflow-hidden rounded-2xl pb-10 !text-base dark:border-zinc-700',
 			c
 		)}
 		rows={2}
@@ -189,7 +184,7 @@
 	/>
 
 	<div class="absolute bottom-0 flex w-fit flex-row justify-start p-2">
-		{@render attachmentsButton()}
+		<!-- {@render attachmentsButton()} -->
 	</div>
 
 	<div class="absolute bottom-0 right-0 flex w-fit flex-row justify-end p-2">
@@ -202,7 +197,7 @@
 </div>
 
 {#snippet attachmentsButton()}
-	<Button
+	<!-- <Button
 		class="h-fit rounded-md rounded-bl-lg p-[7px] hover:bg-zinc-200 dark:border-zinc-700 hover:dark:bg-zinc-900"
 		onclick={(event) => {
 			event.preventDefault();
@@ -212,7 +207,7 @@
 		variant="ghost"
 	>
 		<PaperclipIcon size={14} />
-	</Button>
+	</Button> -->
 {/snippet}
 
 {#snippet stopButton()}
