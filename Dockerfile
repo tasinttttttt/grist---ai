@@ -10,9 +10,6 @@ RUN corepack enable pnpm
 RUN pnpm install
 RUN pnpm run build
 COPY /app/build /var/html/app
-COPY pb /pb
-COPY install_pocketbase.sh /
-RUN /install_pocketbase.sh
 COPY entrypoint.sh /entrypoint.sh
 
 EXPOSE 3000 8090

@@ -1,15 +1,12 @@
 <script lang="ts">
 	import type { Chat } from '@ai-sdk/svelte';
-	import PreviewAttachment from './preview-attachment.svelte';
 	import { Textarea } from './ui/textarea';
 	import { cn } from '$lib/utils/shadcn';
 	import { onMount } from 'svelte';
 	import { LocalStorage } from '$lib/hooks/local-storage.svelte';
 	import { innerWidth } from 'svelte/reactivity/window';
-	import type { Attachment } from 'ai';
 	import { toast } from 'svelte-sonner';
 	import { Button } from './ui/button';
-	import PaperclipIcon from './icons/paperclip.svelte';
 	import StopIcon from './icons/stop.svelte';
 	import ArrowUpIcon from './icons/arrow-up.svelte';
 	import SuggestedActions from './suggested-actions.svelte';
@@ -54,10 +51,7 @@
 
 	async function submitForm(event?: Event) {
 		if (user) {
-			replaceState(`/chat/${chatClient.id}`, {
-				docId,
-				tableId
-			});
+			replaceState(`/chat/${chatClient.id}`, {});
 		}
 
 		await chatClient.handleSubmit(event, {
@@ -143,25 +137,6 @@
 		tabIndex={-1}
 	/>
 
-	<!-- {#if attachments.length > 0 || uploadQueue.length > 0}
-		<div class="flex flex-row items-end gap-2 overflow-x-scroll">
-			{#each attachments as attachment (attachment.url)}
-				<PreviewAttachment {attachment} />
-			{/each}
-
-			{#each uploadQueue as filename}
-				<PreviewAttachment
-					attachment={{
-						url: '',
-						name: filename,
-						contentType: ''
-					}}
-					uploading
-				/>
-			{/each}
-		</div>
-	{/if} -->
-
 	<Textarea
 		bind:ref={textareaRef}
 		placeholder="Send a message..."
@@ -185,10 +160,6 @@
 		}}
 	/>
 
-	<div class="absolute bottom-0 flex w-fit flex-row justify-start p-2">
-		<!-- {@render attachmentsButton()} -->
-	</div>
-
 	<div class="absolute bottom-0 right-0 flex w-fit flex-row justify-end p-2">
 		{#if loading}
 			{@render stopButton()}
@@ -197,20 +168,6 @@
 		{/if}
 	</div>
 </div>
-
-{#snippet attachmentsButton()}
-	<!-- <Button
-		class="h-fit rounded-md rounded-bl-lg p-[7px] hover:bg-zinc-200 dark:border-zinc-700 hover:dark:bg-zinc-900"
-		onclick={(event) => {
-			event.preventDefault();
-			fileInputRef?.click();
-		}}
-		disabled={loading}
-		variant="ghost"
-	>
-		<PaperclipIcon size={14} />
-	</Button> -->
-{/snippet}
 
 {#snippet stopButton()}
 	<Button

@@ -52,7 +52,6 @@
 			required
 			on:input={(e) => {
 				setApiKey(e.target.value);
-				console.log($apiKey);
 			}}
 		/>
 	</div>

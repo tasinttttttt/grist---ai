@@ -1,19 +1,18 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
+	import type { User } from '$lib/server/db/schema';
+	import PlusIcon from './icons/plus.svelte';
+	import SidebarUserNav from './sidebar-user-nav.svelte';
 	import { Button } from './ui/button';
 	import {
-		useSidebar,
 		Sidebar,
 		SidebarContent,
 		SidebarFooter,
 		SidebarHeader,
-		SidebarMenu
+		SidebarMenu,
+		useSidebar
 	} from './ui/sidebar';
 	import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
-	import { goto } from '$app/navigation';
-	import PlusIcon from './icons/plus.svelte';
-	import type { User } from '$lib/server/db/schema';
-	import SidebarUserNav from './sidebar-user-nav.svelte';
-	import { SidebarHistory } from './sidebar-history';
 
 	let { user }: { user?: User } = $props();
 
@@ -57,9 +56,7 @@
 			</div>
 		</SidebarMenu>
 	</SidebarHeader>
-	<SidebarContent>
-		<!-- <SidebarHistory {user} /> -->
-	</SidebarContent>
+	<SidebarContent></SidebarContent>
 	<SidebarFooter>
 		{#if user}
 			<SidebarUserNav {user} />

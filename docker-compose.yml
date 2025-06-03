@@ -10,8 +10,6 @@ services:
     build:
       dockerfile: Dockerfile.front
       target: dev
-    depends_on:
-      - pb
     restart: unless-stopped
     networks:
       - app
@@ -22,18 +20,6 @@ services:
       - type: bind
         source: .
         target: /app
-  pb:
-    container_name: grist-ai-dev-pb
-    build:
-      dockerfile: Dockerfile.api
-    ports:
-      - ${HOST_API_PORT:-8088}:8090
-    networks:
-      - app
-    volumes:
-      - type: bind
-        source: ${HOST_VOLUME_PATH:-./pb/pb_data}
-        target: /pb/pb_data
 networks:
   app:
     driver: bridge

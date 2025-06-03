@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { Chat } from '@ai-sdk/svelte';
 	import { toast } from 'svelte-sonner';
-	// import { ChatHistory } from '$lib/hooks/chat-history.svelte';
-	import type { Chat as DbChat, User } from '$lib/server/db/schema';
 	import type { UIMessage } from '@ai-sdk/svelte';
 	import { onMount, untrack } from 'svelte';
 	import ChatHeader from './chat-header.svelte';
@@ -10,7 +8,7 @@
 	import MultimodalInput from './multimodal-input.svelte';
 
 	import { PUBLIC_CHAT_URL } from '$env/static/public';
-	import { apiKey } from '$lib/hooks/useApiKey';
+	import { apiKey, getApiKey } from '$lib/hooks/useApiKey';
 
 	let {
 		user,
@@ -24,17 +22,14 @@
 		readonly: boolean;
 	} = $props();
 
-	// const chatHistory = ChatHistory.fromContext();
-
 	let documentId = $state('');
 	let tableId = $state('');
 	const chatClient = $derived(
 		new Chat({
 			id: chat?.id,
-			api: 'https://dev.bhub.cloud/chat', //PUBLIC_CHAT_URL,
+			api: PUBLIC_CHAT_URL,
 			headers: {
-				'x-api-key': '083a79c72668f8808e334d92fabb694f1148c940'
-				// $apiKey
+				'x-api-key': getApiKey() || ''
 			},
 			initialMessages: untrack(() => initialMessages),
 			sendExtraMessageFields: true,
@@ -45,8 +40,8 @@
 			},
 			body: {
 				documentId,
-				executionMode: 'production',
-				webhookUrl: 'https://lol.ptdr'
+				executionMode: 'production-or-is-it',
+				webhookUrl: 'https://why-do-you-need-me.so'
 				// tableId
 			},
 			onFinish: async (e) => {
@@ -92,6 +87,7 @@
 		loading={chatClient.status === 'streaming' || chatClient.status === 'submitted'}
 		messages={chatClient?.messages}
 	/>
+
 	<form class="bg-background mx-auto flex w-full gap-2 px-4 pb-4 md:max-w-3xl md:pb-6">
 		{#if !readonly}
 			<MultimodalInput {user} {chatClient} class="flex-1" />

@@ -25,7 +25,7 @@ import { DbInternalError } from '$lib/errors/db';
 import ms from 'ms';
 import { unwrapSingleQueryResult } from './utils';
 import { env } from '$env/dynamic/public';
-import PocketBase from 'pocketbase';
+// import PocketBase from 'pocketbase';
 
 // Optionally, if not using email/pass login, you can
 // use the Drizzle adapter for Auth.js / NextAuth
@@ -34,12 +34,12 @@ import PocketBase from 'pocketbase';
 // biome-ignore lint: Forbidden non-null assertion.
 // const client = postgres(POSTGRES_URL);
 // const db = drizzle(client);
-const pb = new PocketBase(env.PUBLIC_API_URL);
+// const pb = new PocketBase(env.PUBLIC_API_URL);
 
 export function getApiKey(): ResultAsync<unknown, DbError> {
 	return safeTry(async function* () {
 		const apiTokenResult = yield* fromPromise(
-			pb.collection('meta').getFirstListItem(`apiKey != ''`),
+			// pb.collection('meta').getFirstListItem(`apiKey != ''`),
 			(e) => new DbInternalError({ cause: e })
 		);
 		return apiTokenResult?.apiKey;
@@ -47,59 +47,47 @@ export function getApiKey(): ResultAsync<unknown, DbError> {
 }
 
 export async function saveApiKey(apiKey: string) {
-	const records = await pb.collection('meta').getFullList();
-	records?.map(({ id }) => {
-		pb.collection('meta').delete(id);
-	});
-
-	const result = await pb.collection('meta').create({
-		apiKey
-	});
-
-	return result;
-	return safeTry(async function* () {
-		const records = await pb.collection('meta').getFullList();
-		records?.map(({ id }) => {
-			pb.collection('meta').delete(id);
-		});
-
-		const result = yield* fromPromise(
-			pb.collection('meta').create({
-				apiKey
-			}),
-			(e) => new DbInternalError({ cause: e })
-		);
-
-		return result;
-	});
+	// const records = await pb.collection('meta').getFullList();
+	// records?.map(({ id }) => {
+	// 	pb.collection('meta').delete(id);
+	// });
+	// const result = await pb.collection('meta').create({
+	// 	apiKey
+	// });
+	// return result;
+	// return safeTry(async function* () {
+	// 	const records = await pb.collection('meta').getFullList();
+	// 	records?.map(({ id }) => {
+	// 		pb.collection('meta').delete(id);
+	// 	});
+	// 	const result = yield* fromPromise(
+	// 		pb.collection('meta').create({
+	// 			apiKey
+	// 		}),
+	// 		(e) => new DbInternalError({ cause: e })
+	// 	);
+	// 	return result;
+	// });
 }
 
-export function saveChat({
-	id,
-	title
-}: {
-	id: string;
-	title: string;
-}): ResultAsync<unknown, DbError> {
-	return safeTry(async function* () {
-		const insertResult = yield* fromPromise(
-			pb.collection('chat').create({
-				id,
-				createdAt: new Date(),
-				title
-			}),
-			(e) => new DbInternalError({ cause: e })
-		);
-
-		return insertResult;
-		// return unwrapSingleQueryResult(insertResult, id, 'Chat');
-	});
+export function saveChat({ id, title }: { id: string; title: string }) {
+	// return safeTry(async function* () {
+	// 	const insertResult = yield* fromPromise(
+	// 		pb.collection('chat').create({
+	// 			id,
+	// 			createdAt: new Date(),
+	// 			title
+	// 		}),
+	// 		(e) => new DbInternalError({ cause: e })
+	// 	);
+	// 	return insertResult;
+	// 	// return unwrapSingleQueryResult(insertResult, id, 'Chat');
+	// });
 }
 
 export async function getChats() {
-	const result = await pb.collection('chat').getFullList();
-
-	return result;
+	// const result = await pb.collection('chat').getFullList();
+	// return result;
 }
 
 export function deleteChatById({ id }: { id: string }): ResultAsync<undefined, DbError> {
@@ -118,49 +106,47 @@ export function deleteChatById({ id }: { id: string }): ResultAsync<undefined, D
 	});
 }
 
-export async function getChatById({ id }: { id: string }) {
-	const result = await pb.collection('chat').getFirstListItem(`id = ${id}`);
+// export async function getChatById({ id }: { id: string }) {
+// 	const result = await pb.collection('chat').getFirstListItem(`id = ${id}`);
 
-	return result;
-	return safeTry(async function* () {
-		const chatResult = yield* fromPromise(
-			db.select().from(chat).where(eq(chat.id, id)),
-			(e) => new DbInternalError({ cause: e })
-		);
+// 	return result;
+// 	return safeTry(async function* () {
+// 		const chatResult = yield* fromPromise(
+// 			db.select().from(chat).where(eq(chat.id, id)),
+// 			(e) => new DbInternalError({ cause: e })
+// 		);
 
-		return unwrapSingleQueryResult(chatResult, id, 'Chat');
-	});
-}
+// 		return unwrapSingleQueryResult(chatResult, id, 'Chat');
+// 	});
+// }
 
 export async function saveMessages({ messages }: { messages: Array<Message> }) {
-	messages.forEach(async (message) => {
-		await pb.collection('message').create({
-			...message
-		});
-	});
-	return ok(200);
+	// messages.forEach(async (message) => {
+	// 	await pb.collection('message').create({
+	// 		...message
+	// 	});
+	// });
+	// return ok(200);
 	// return safeTry(async function* () {
 	// 	const insertResult = yield* fromPromise(
 	// 		db.insert(message).values(messages).returning(),
 	// 		(e) => new DbInternalError({ cause: e })
 	// 	);
-
 	// 	return ok(insertResult);
 	// });
 }
 
 export async function getMessagesByChatId({ id }: { id: string }) {
-	const result = await pb.collection('message').getFullList({
-		filter: `chatId == ${id}`,
-		sort: 'created'
-	});
-	return ok(result);
+	// const result = await pb.collection('message').getFullList({
+	// 	filter: `chatId == ${id}`,
+	// 	sort: 'created'
+	// });
+	// return ok(result);
 	// return safeTry(async function* () {
 	// 	const messages = yield* fromPromise(
 	// 		db.select().from(message).where(eq(message.chatId, id)).orderBy(asc(message.createdAt)),
 	// 		(e) => new DbInternalError({ cause: e })
 	// 	);
-
 	// 	return ok(messages);
 	// });
 }
